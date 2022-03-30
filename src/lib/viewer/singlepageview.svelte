@@ -1,10 +1,14 @@
 <script>
   export let fetchchapter;
+  export let getImage;
   export let post = undefined;
   export let doublePageview;
 
   import Layout from "$lib/_classiclayout.svelte";
   import Lazy from "$lib/Lazy.svelte";
+
+  let currentChapter = 0;
+
 </script>
 
 <Layout>
@@ -13,7 +17,9 @@
       {#if !post}
         <h1>Post not Fount</h1>
       {:else}
-        <button class="switchvieverstylebtn" on:click={() => { $doublePageview = !$doublePageview; }}>Reader mode</button>
+        <button class="switchvieverstylebtn" on:click={() => {history.back();}}>Go Back</button>
+        <button class="switchvieverstylebtn" on:click={() => { $doublePageview = !$doublePageview; }}>Reader mode
+        </button>
         <h2>{post.title}</h2>
 
 
@@ -21,22 +27,50 @@
           <p>...waiting</p>
         {:then chapters}
 
-          {#each chapters as chapter}
-            <div>
-              {#each chapter as image}
+          <h1 id="chaptertitle">Chapter: {currentChapter}</h1>
+          {#each chapters as chapter, index}
+            {#if currentChapter === index}
+              {#each chapter as image, imgindex}
                 <div class="image-wrapper">
                   <Lazy height={image.height} offset="300" placeholder="{image.name}">
-                    <img style="margin-left: auto; margin-right: auto; display: block"
-                         src="{image.url}"
-                         alt="{image.name}">
+                    {#await getImage(image.url)}
+                      <p>loading image</p>
+                    {:then imageurl}
+                      <img style="margin-left: auto; margin-right: auto; display: block" src="{imageurl}"
+                           alt="{image.name}">
+                    {:catch _}
+                      <p>error</p>
+                    {/await}
+
+
                   </Lazy>
+
+
                 </div>
-
               {/each}
-            </div>
-
-
+            {/if}
           {/each}
+
+
+          {#if chapters.length > 1}
+            <div id="linkwrapper">
+
+              {#if currentChapter - 1 >= 0}
+                <a href="#{currentChapter - 1}" on:click={() => {currentChapter--;}}>« Previous</a>
+              {/if}
+
+              {#each chapters as chapter, index}
+                <a class="{index === currentChapter ? 'iamselected' : ''}" href=""
+                   on:click={() => {currentChapter = index;}}>{index}</a>
+              {/each}
+
+              {#if currentChapter + 1 < chapters.length}
+                <a href="#{currentChapter + 1}" on:click={() => {currentChapter++;}}>Next »</a>
+              {/if}
+
+            </div>
+          {/if}
+
 
         {:catch error}
           <p>An error occurred!</p>
@@ -49,6 +83,30 @@
 
 
 <style>
+    .iamselected {
+        color: red;
+    }
+
+    #linkwrapper * {
+        background-color: #333;
+        border-radius: 3px;
+        cursor: pointer;
+        display: inline-block;
+        color: #70bce2;
+        padding: 6px;
+        font-weight: 400;
+        margin: 0 4px;
+        font-size: 1.6rem;
+    }
+
+    #linkwrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+
     .switchvieverstylebtn {
         color: #ababab;
         border-radius: 0;
@@ -57,6 +115,7 @@
         padding: 2px;
         margin: 2px
     }
+
     .image-wrapper {
         margin-bottom: 2px;
     }

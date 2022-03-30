@@ -1,6 +1,5 @@
 <script>
     import Quicklinks from "./header/quicklinks_stupidcopy.svelte";
-    export let segment;
 
     const links = [
         {Name:"about",link:"/about/"},
@@ -13,8 +12,7 @@
     ]
 
     const pkg = {
-        links: links,
-        segment: segment
+        links: links
     }
 </script>
 

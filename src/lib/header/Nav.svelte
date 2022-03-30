@@ -1,8 +1,7 @@
 <script>
     import Quicklinks from "./quicklinks.svelte";
     import SearchBox from "./SearchBox.svelte"
-    
-    export let segment;
+
 
     const links = [
         // {Name:"BARA",link:"/genre/bara/"},
@@ -19,8 +18,7 @@
     ]
 
     const pkg = {
-        links: links,
-        segment: segment
+        links: links
     }
 </script>
 

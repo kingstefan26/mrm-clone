@@ -2,7 +2,7 @@ import Cockpit from "$lib/api/cockpit.js";
 
 export async function get({ params }) {
 
-  const cockpit = new Cockpit({ host: "http://localhost", token: "d1ec6a873a7b1ac487638748f3fbb5" });
+  const cockpit = new Cockpit({ host: "http://localhost:8080", token: "d1ec6a873a7b1ac487638748f3fbb5" });
 
   let body = "{\"message\": \"nah you slut\"}";
 

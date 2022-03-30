@@ -4,7 +4,8 @@
         coverpicurl: undefined,
         id: 0,
         author: undefined,
-        lang: undefined
+        lang: undefined,
+        link: `/altfeed/post/${post.title}`
     };
 
 </script>

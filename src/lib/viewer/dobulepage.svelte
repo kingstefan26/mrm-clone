@@ -1,5 +1,6 @@
 <script>
   export let fetchchapter;
+  export let getImage;
   export let post = undefined;
   export let metadata = undefined;
   export let doublePageview;
@@ -100,21 +101,68 @@
   }
 
   onMount(() => {
-    const bookmark = localStorage.getItem("bookmark" + post._id);
-    if (bookmark) {
-      let bookmarkobj = JSON.parse(bookmark);
-      currentchapter = bookmarkobj.chapter;
-      currentimage = bookmarkobj.image;
+    const bookmarks = localStorage.getItem("bookmarks");
+    if (bookmarks) {
+      let bookmarkobj = JSON.parse(bookmarks);
+
+      const thisstorybooksmarks = bookmarkobj.filter(bookmark => bookmark.id === post._id);
+
+
+      let largestchapter = 0;
+      let largestimage = 0;
+
+      thisstorybooksmarks.forEach(bookmark => {
+        if (bookmark.chapter > largestchapter) {
+          largestchapter = bookmark.chapter;
+        }
+        if (bookmark.image > largestimage) {
+          largestimage = bookmark.image;
+        }
+
+      });
+
+      currentchapter = largestchapter;
+      currentimage = largestimage;
     }
   });
 
   let savebookmark = () => {
     let bookmark = {
       chapter: currentchapter,
-      image: currentimage
+      image: currentimage,
+      id: post._id,
+      title: post.title,
+      poster: post.poster.path
     };
-    localStorage.setItem("bookmark" + post._id, JSON.stringify(bookmark));
+    const bookmarksks = JSON.parse(localStorage.getItem("bookmarks"));
+    console.log(bookmarksks);
+    if (bookmarksks) {
+      localStorage.setItem("bookmarks", JSON.stringify([...bookmarksks, bookmark]));
+    } else {
+      localStorage.setItem("bookmarks", JSON.stringify([bookmark]));
+    }
   };
+
+  function handlethaclick(e, chapters) {
+    let clicked = window.innerWidth / 2 < e.clientX;
+    // true = right , false = left
+    if (clicked) {
+      currentimage = getnextimage(chapters);
+    } else {
+      currentimage = getpreviosimage(chapters);
+    }
+  }
+
+  function absorbEvent_(event) {
+    const e = event || window.event;
+    e.preventDefault && e.preventDefault();
+    e.stopPropagation && e.stopPropagation();
+    e.cancelBubble = true;
+    e.returnValue = false;
+    return false;
+  }
+
+  $: currentchapter, currentimage = 0;
 
 
 </script>
@@ -124,7 +172,7 @@
 
   <div class="nav-wrapper">
     <div class="nav">
-      <button class="backbtn" onclick="history.back()">Go Back</button>
+      <button class="backbtn" on:click={() => {history.back();}}>Go Back</button>
 
       <button class="extraoptionbtn"
               on:click={() => { $doublePageview = !$doublePageview }}>
@@ -135,7 +183,7 @@
         {isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
       </button>
 
-      <button class="bookmark" on:click={savebookmark}>
+      <button class="bookmark" on:click={savebookmark} aria-label="bookmark-post">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path d="M16 2v17.582l-4-3.512-4 3.512v-17.582h8zm2-2h-12v24l6-5.269 6 5.269v-24z" />
         </svg>
@@ -184,20 +232,34 @@
 
         </div>
 
-        <div class="body">
+        <div class="body" on:ontouchstart={absorbEvent_} on:ontouchmove={absorbEvent_} on:ontouchend={absorbEvent_}
+             on:ontouchcancel={absorbEvent_} on:mousedown={absorbEvent_} on:contextmenu={absorbEvent_}
+             on:click|preventDefault={(e) => handlethaclick(e, chapters)}>
+
+          <!--          <button id="back-touch" on:click={() => { currentimage = getpreviosimage(chapters); }}></button>-->
 
           <Lazy fadeOption={ {delay: 10, duration: 1000} } offset={0}
-
                 placeholder="{chapters[currentchapter][currentimage].name}">
-            <img src="{chapters[currentchapter][currentimage].url}" alt="{chapters[currentchapter][currentimage].name}">
+
+            {#await getImage(chapters[currentchapter][currentimage].url)}
+            {:then bloburl}
+              <img src="{bloburl}" alt="{chapters[currentchapter][currentimage].name}">
+
+            {:catch error}
+              <p>oops...</p>
+            {/await}
+
           </Lazy>
+
+          <!--          <button id="forward-touch" on:click={() => { currentimage = getnextimage(chapters) }}></button>-->
+
 
         </div>
 
         <div class="controls">
 
-          <button class="arrows"
-                  on:click={() => { currentimage = getpreviosimage(chapters); }}>
+          <button class="arrows arrow-back"
+                  on:click={() => { currentimage = getpreviosimage(chapters); }} aria-label="next image">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path
                 d="M0 12c0 6.627 5.373 12 12 12s12-5.373 12-12-5.373-12-12-12-12 5.373-12 12zm7.58 0l5.988-5.995 1.414 1.416-4.574 4.579 4.574 4.59-1.414 1.416-5.988-6.006z" />
@@ -205,8 +267,8 @@
           </button>
 
 
-          <button class="arrows"
-                  on:click={() => { currentimage = getnextimage(chapters) }}>
+          <button class="arrows arrow-forward"
+                  on:click={() => { currentimage = getnextimage(chapters) }} aria-label="previos-image">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path
                 d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.568 18.005l-1.414-1.415 4.574-4.59-4.574-4.579 1.414-1.416 5.988 5.995-5.988 6.005z" />
@@ -309,7 +371,7 @@
         padding: 10px;
         display: flex;
         justify-content: center;
-        /*width: 80%;*/
+        height: 100%;
     }
 
     .body img {
@@ -327,7 +389,7 @@
         margin: 0 10px 0 10px;
         /*padding: 3px;*/
         text-align: center;
-        width: min-content;
+        width: 50%;
         height: min-content;
 
         background: #343434;
@@ -350,7 +412,7 @@
         z-index: 1;
         top: calc(100vh - 50px);
         position: absolute;
-        width: 35vw;
+        width: 30vw;
         left: calc(50% - 17.5vw);
         background: #343434;
         display: flex;

@@ -3,15 +3,26 @@
 
   import Spiner from "../../lib/spiner.svelte";
 
+  import { cockpitOrgin } from "$lib/shared/host.js";
+
   import { onMount } from "svelte";
 
-  const BASE_URL = "http://192.168.1.38";
-  const BASE_API_URL = `${BASE_URL}/api`;
+  const BASE_URL = cockpitOrgin;
   const BASE_IMAGE_URL = `${BASE_URL}/storage/uploads`;
+
+  let iserrror = false;
 
   const fetchcocks = async () => {
 
-    const res = await fetch('/altfeed/altfeed.json');
+    console.log('featching cocks');
+
+    const res = await fetch("/altfeed/altfeed.json");
+
+    if(res.status !== 200) {
+      iserrror = true;
+      return [];
+    }
+
     const json = await res.json();
 
     const posts = [];
@@ -32,7 +43,7 @@
         obj.lang = post.lang;
       }
       if (post.poster) {
-        obj.coverpicurl = BASE_URL + '/' + post.poster.path;
+        obj.coverpicurl = `/asset${post.poster.path}?q=2`;
       }
       posts.push(obj);
 
@@ -46,6 +57,10 @@
       const sessionfeed = sessionStorage.getItem("feed");
       if (sessionfeed) {
         const json = JSON.parse(sessionfeed);
+        if(!json.length){
+          iserrror = true;
+          return;
+        }
         feed = json;
       } else {
         const freshfeed = await fetchcocks();
@@ -59,10 +74,49 @@
 
   });
 
-
   let feed = [];
 
 </script>
+
+<style>
+
+    .content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        overflow: hidden;
+        max-width: 100%;
+    }
+
+    .error {
+        text-align: center;
+    }
+
+    #refresh {
+        color: black;
+    }
+
+</style>
+
+
+<svelte:head>
+  <title>AltFeed</title>
+</svelte:head>
+
+<section>
+  <button id="refresh" on:click={() => {location.reload(); sessionStorage.removeItem("feed");}}>
+    Refresh cache
+  </button>
+</section>
+
+{#if iserrror}
+  <div class="error">
+      <h1>Error</h1>
+      <p>
+        Something went wrong.
+      </p>
+    </div>
+{/if}
 
 
 {#if !feed}
@@ -80,21 +134,3 @@
 {/if}
 
 
-<style>
-
-    .wrapper {
-        display: grid;
-        grid-template-columns: 70%;
-        place-items: center;
-        padding: 0 10% 0 10%;
-    }
-
-    .content {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        overflow: hidden;
-        max-width: 100%;
-    }
-
-</style>

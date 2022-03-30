@@ -1,14 +1,12 @@
 import Cockpit from "$lib/api/cockpit.js";
+import { cockpitOrgin } from "$lib/shared/host.js";
 
 export async function get() {
 
-  const cockpit = new Cockpit({ host: "http://localhost", token: "d1ec6a873a7b1ac487638748f3fbb5" });
+  const cockpit = new Cockpit({ host: cockpitOrgin, token: "74cbd466156296523850841132baa4" });
 
   let body = '{"message": "nah you slut"}';
 
-  // await cockpit.collectionEntries('potss').then((entries) => {
-  //   body = entries;
-  // });
   await cockpit.fetchDataText("/api/collections/get/potss", { method: "GET" }, { populate: "1" }).then((entries) => {
     body = entries;
   });

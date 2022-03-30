@@ -1,7 +1,6 @@
 
 <script>
 
-    export let segment;
     export let links;
 </script>
 
@@ -10,7 +9,7 @@
         <div id="quick-links">
             {#each links as link}
                 <div class="quick-link-element">
-                    <a sapper:prefetch class:selected={segment === link.Name} class="link" href={link.link}> {link.Name.toUpperCase()} </a>
+                    <a sveltekit:prefetch class="link" href={link.link}> {link.Name.toUpperCase()} </a>
                 </div>
             {/each}
         </div>

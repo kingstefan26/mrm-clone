@@ -22,6 +22,7 @@ worker.addEventListener('install', (event) => {
 });
 
 worker.addEventListener('activate', (event) => {
+	console.log('[Service Worker] Installing Service Worker ...');
 	event.waitUntil(
 		caches.keys().then(async (keys) => {
 			// delete old caches

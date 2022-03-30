@@ -2,31 +2,35 @@
 
 import posts from './_postsdata.js';
 
-export async function get(req, res, next) {
-	// the `slug` parameter is available because
-	// this file is called [slug].json.js
-	const { slug } = req.params;
-	
+/** @type {import('./[id]').RequestHandler} */
+export async function get({ params }) {
+	const slug = params.slug;
+
 	if(slug > 10){
-		res.writeHead(404);
-	
-		res.end();
+
+		return {
+			status: 404,
+			body: {
+				message: 'Not Found'
+			}
+		};
 	}
 
 	let page
 
-	if(slug == 0){
+	if(slug === 0){
 		page = posts.slice(0, 9);
 	}else {
 		page = posts.slice((slug * 10) - 2, (slug * 10) + 9)
 	}
 
-	
 
-	res.writeHead(200, {
-		'Content-Type': 'application/json'
-	});
+	return {
+		status: 200,
+		headers: {
+			'content-type': 'application/json'
+		},
+		body: JSON.stringify(page)
+	};
 
-	res.end(JSON.stringify(page));
-	
 }

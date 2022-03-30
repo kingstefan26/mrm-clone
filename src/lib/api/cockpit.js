@@ -41,8 +41,7 @@ export default class Cockpit {
       ...defaultOptions
     }
 
-    const hostWithToken = `${this.host}${apiPath}?${qs.stringify(this.queryParams)}&${additionalOptions}`
-
+    const hostWithToken = `${this.host}${apiPath}?${qs.stringify(this.queryParams)}&${aqs.stringify(additionalOptions)}`
 
     const response = await fetch(hostWithToken, requestInit)
     return await response.text()

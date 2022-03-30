@@ -16,21 +16,26 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-svelte3": "^3.2.1",
+    "kit-sw-workbox": "^1.0.2",
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.5.0",
     "svelte": "^3.46.0",
     "svelte-lazy": "^1.1.0",
-    "userbase-js": "^2.8.0"
+    "userbase-js": "^2.8.0",
+    "workbox-precaching": "^6.5.2",
+    "workbox-window": "^6.5.2"
   },
   "type": "module",
   "dependencies": {
     "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
+    "axios": "^0.26.1",
     "cockpit-api-client": "^1.0.4",
     "cookie": "^0.4.1",
     "isomorphic-fetch": "^3.0.0",
     "qs": "^6.10.3",
     "query-string": "^7.1.1",
+    "sharp": "^0.30.3",
     "svelte-inview": "^3.0.0"
   }
 }

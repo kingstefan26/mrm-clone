@@ -1,26 +1,29 @@
 <script>
   import InformationPage from "../lib/Information_page.svelte";
+  import PostWiget from './altfeed/_postWiget.svelte';
+  import { onMount } from "svelte";
 
-  import Login from '$lib/login.svelte';
+  import { cockpitOrgin } from "$lib/shared/host.js";
+  let bookmarks = [];
 
-  let session;
+
+
+  onMount(() => {
+    const localstorage = localStorage.getItem("bookmarks");
+    if (localstorage) {
+      bookmarks = JSON.parse(localstorage);
+      console.log(bookmarks);
+    }
+  });
 
 </script>
 
-{#if !session}
 
-  <center>
-    <h1>Please login</h1>
-  </center>
+{#each bookmarks as bookmark}
+  <PostWiget post={{title: bookmark.title, coverpicurl: bookmark.poster ? cockpitOrgin + bookmark.poster : undefined}} />
 
-  <Login bind:session />
-
-{:else }
-
-
-{/if}
-
+{/each}
 
 <InformationPage pagetitle={"Booksmars"}>
-  <center><h1>WIP</h1></center>
+  <div style="text-align: center;"><h1>WIP</h1></div>
 </InformationPage>
