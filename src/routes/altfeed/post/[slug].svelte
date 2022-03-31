@@ -1,8 +1,12 @@
 <script context="module">
-  export async function load({ params, fetch }) {
+  export async function load({ params }) {
     // const res = await fetch(`http://192.168.1.38:1337/api/posts?filters[title][$eq]=${params.slug}&populate=*`);
-
-    const res = await fetch(`http://192.168.1.38:3000/altfeed/post/${params.slug}.json`);
+    let res
+    try {
+      res = await fetch(`http://192.168.1.38:3000/altfeed/post/${params.slug}.json`);
+    } catch (e) {
+      console.log(e);
+    }
 
 
     if (res.ok && res.status === 200) {
