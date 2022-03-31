@@ -14,7 +14,16 @@ export async function get({ params }) {
     }
   }).then((entries) => {
     body = entries;
-  });
+  })
+
+  if(!body.entries){
+
+    return {
+      status: 500,
+      body: "eeeh"
+    }
+
+  }
 
   return {
     status: 200,

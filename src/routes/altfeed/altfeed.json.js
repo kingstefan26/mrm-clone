@@ -9,6 +9,11 @@ export async function get() {
 
   await cockpit.fetchDataText("/api/collections/get/potss", { method: "GET" }, { populate: "1" }).then((entries) => {
     body = entries;
+  }).catch(e => {
+    return {
+      status: 500,
+      body: "eeeh"
+    }
   });
 
   return {

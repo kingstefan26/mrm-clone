@@ -1,5 +1,6 @@
 import qs from "query-string";
 import aqs from "qs";
+import re from "../../../.svelte-kit/output/client/_app/pages/altfeed/index.svelte-9556dd3a.js";
 
 // import fetch from "isomorphic-fetch";
 
@@ -59,7 +60,11 @@ export default class Cockpit {
 
 
     const response = await fetch(hostWithToken, requestInit)
-    return await response.text()
+    if(response.ok){
+      return await response.text()
+    }else {
+      return ''
+    }
   }
 
 
