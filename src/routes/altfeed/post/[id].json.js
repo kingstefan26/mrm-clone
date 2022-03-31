@@ -15,11 +15,18 @@ export async function get({ params }) {
   })}`
 
 
-  const response = await fetch(hostWithToken)
+  let response;
 
-  if(response.ok){
+  try {
+    response = await fetch(hostWithToken);
+  }catch (_) {}
+
+
+
+  if(response && response.ok){
     body = await response.text();
   }
+
 
 
   if(!(JSON.parse(body)).entries){
