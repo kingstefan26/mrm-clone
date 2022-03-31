@@ -1,23 +1,28 @@
-import Cockpit from "$lib/api/cockpit.js";
+import aqs from "qs";
+
 
 export async function get({ params }) {
 
-  const cockpit = new Cockpit({ host: "http://localhost:8080", token: "d1ec6a873a7b1ac487638748f3fbb5" });
 
   let body = "{\"message\": \"nah you slut\"}";
 
 
-  await cockpit.fetchText("/api/collections/get/potss", { method: "GET" }, {
+  const hostWithToken = `http://localhost:8080/api/collections/get/potss?${aqs.stringify( {
     populate: "1",
     filter: {
       title : params.id
     }
-  }).then((entries) => {
-    body = entries;
-  })
+  })}`
 
-  if(!body.entries){
 
+  const response = await fetch(hostWithToken)
+
+  if(response.ok){
+    body = await response.text();
+  }
+
+
+  if(!(JSON.parse(body)).entries){
     return {
       status: 500,
       body: "eeeh"
