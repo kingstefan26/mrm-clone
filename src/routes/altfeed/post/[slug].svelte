@@ -1,7 +1,7 @@
 <script context="module">
   export async function load({ params, fetch }) {
     // const res = await fetch(`http://192.168.1.38:1337/api/posts?filters[title][$eq]=${params.slug}&populate=*`);
-    const res = await fetch(`http://localhost:3000/altfeed/post/${params.slug}.json`);
+    const res = await fetch(`/altfeed/post/${params.slug}.json`);
 
 
     if (res.ok && res.status === 200) {
