@@ -1,6 +1,5 @@
 import qs from "query-string";
 import aqs from "qs";
-import re from "../../../.svelte-kit/output/client/_app/pages/altfeed/index.svelte-9556dd3a.js";
 
 // import fetch from "isomorphic-fetch";
 
