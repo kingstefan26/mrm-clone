@@ -6,7 +6,93 @@
 
 
 
-    const data = await res.json();
+    let data = await res.json();
+
+    if(!data) {
+      data = JSON.parse('{\n' +
+        '  "entries": [\n' +
+        '    {\n' +
+        '      "_id": "62426f66aad26860dd2b9182",\n' +
+        '      "title": "test",\n' +
+        '      "author": "test",\n' +
+        '      "chapters": [\n' +
+        '        {\n' +
+        '          "_id": "62426f4377b2de1b8f62a652",\n' +
+        '          "name": "test",\n' +
+        '          "chapter_media": [\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38bb7e4767a6400222"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/index.png?v=1648708320976"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38c0488a43543d8b72"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/vertical.png?v=1648708320939"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38cede4a53cb211d82"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/horisontal.png?v=1648708321328"\n' +
+        '            }\n' +
+        '          ],\n' +
+        '          "_mby": "623f7bda63ec7431f5343042",\n' +
+        '          "_by": "623f7bda63ec7431f5343042",\n' +
+        '          "_modified": 1648521027,\n' +
+        '          "_created": 1648521027,\n' +
+        '          "_link": "chapters"\n' +
+        '        },\n' +
+        '        {\n' +
+        '          "_id": "62426f50625b7b3d560d9a02",\n' +
+        '          "name": "test2",\n' +
+        '          "chapter_media": [\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38bb7e4767a6400222"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/index.png?v=1648708320976"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38c0488a43543d8b72"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/vertical.png?v=1648708320939"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38cede4a53cb211d82"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/horisontal.png?v=1648708321328"\n' +
+        '            }\n' +
+        '          ],\n' +
+        '          "_mby": "623f7bda63ec7431f5343042",\n' +
+        '          "_by": "623f7bda63ec7431f5343042",\n' +
+        '          "_modified": 1648521040,\n' +
+        '          "_created": 1648521040,\n' +
+        '          "_link": "chapters"\n' +
+        '        }\n' +
+        '      ],\n' +
+        '      "poster": {\n' +
+        '        "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/vertical.png?v=1648708320939"\n' +
+        '      },\n' +
+        '      "_mby": "623f7bda63ec7431f5343042",\n' +
+        '      "_by": "623f7bda63ec7431f5343042",\n' +
+        '      "_modified": 1648521062,\n' +
+        '      "_created": 1648521062\n' +
+        '    }\n' +
+        '  ],\n' +
+        '  "total": 1\n' +
+        '}\n')
+    }
 
     if (res.status === 200) {
 
@@ -67,6 +153,7 @@
       savedata = true;
     }
 
+    console.log(post);
 
 
     post.chapters.forEach(chapter => {
@@ -74,7 +161,7 @@
 
       chapter.chapter_media.forEach(media => {
         allmedia.push({
-          url: '/asset' + media.path + (savedata ? '?q=1' : ''),
+          url: media.path.startsWith('http') ? media.path : '/asset' + media.path + (savedata ? '?q=1' : ''),
           height: 200,
           witdh: 200,
           name: "hehe"

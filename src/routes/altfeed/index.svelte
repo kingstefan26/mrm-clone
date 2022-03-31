@@ -18,12 +18,98 @@
 
     const res = await fetch("/altfeed/altfeed.json");
 
-    if(res.status !== 200) {
-      iserrror = true;
-      return [];
-    }
+    // if(res.status !== 200) {
+    //   iserrror = true;
+    //   return [];
+    // }
 
-    const json = await res.json();
+    let json = await res.json();
+
+    if(!json) {
+      json = JSON.parse('{\n' +
+        '  "entries": [\n' +
+        '    {\n' +
+        '      "_id": "62426f66aad26860dd2b9182",\n' +
+        '      "title": "test",\n' +
+        '      "author": "test",\n' +
+        '      "chapters": [\n' +
+        '        {\n' +
+        '          "_id": "62426f4377b2de1b8f62a652",\n' +
+        '          "name": "test",\n' +
+        '          "chapter_media": [\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38bb7e4767a6400222"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/index.png?v=1648708320976"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38c0488a43543d8b72"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/vertical.png?v=1648708320939"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38cede4a53cb211d82"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/horisontal.png?v=1648708321328"\n' +
+        '            }\n' +
+        '          ],\n' +
+        '          "_mby": "623f7bda63ec7431f5343042",\n' +
+        '          "_by": "623f7bda63ec7431f5343042",\n' +
+        '          "_modified": 1648521027,\n' +
+        '          "_created": 1648521027,\n' +
+        '          "_link": "chapters"\n' +
+        '        },\n' +
+        '        {\n' +
+        '          "_id": "62426f50625b7b3d560d9a02",\n' +
+        '          "name": "test2",\n' +
+        '          "chapter_media": [\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38bb7e4767a6400222"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/index.png?v=1648708320976"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38c0488a43543d8b72"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/vertical.png?v=1648708320939"\n' +
+        '            },\n' +
+        '            {\n' +
+        '              "meta": {\n' +
+        '                "title": "",\n' +
+        '                "asset": "62426f38cede4a53cb211d82"\n' +
+        '              },\n' +
+        '              "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/horisontal.png?v=1648708321328"\n' +
+        '            }\n' +
+        '          ],\n' +
+        '          "_mby": "623f7bda63ec7431f5343042",\n' +
+        '          "_by": "623f7bda63ec7431f5343042",\n' +
+        '          "_modified": 1648521040,\n' +
+        '          "_created": 1648521040,\n' +
+        '          "_link": "chapters"\n' +
+        '        }\n' +
+        '      ],\n' +
+        '      "poster": {\n' +
+        '        "path": "https://cdn.glitch.global/17cc8f98-08bf-484d-a833-5a8e854d7d9f/vertical.png?v=1648708320939"\n' +
+        '      },\n' +
+        '      "_mby": "623f7bda63ec7431f5343042",\n' +
+        '      "_by": "623f7bda63ec7431f5343042",\n' +
+        '      "_modified": 1648521062,\n' +
+        '      "_created": 1648521062\n' +
+        '    }\n' +
+        '  ],\n' +
+        '  "total": 1\n' +
+        '}\n')
+    }
 
     const posts = [];
 
@@ -33,7 +119,7 @@
         author: undefined,
         lang: undefined,
         title: post.title,
-        coverpicurl: BASE_IMAGE_URL + "/2022/03/24/placeholder.png"
+        coverpicurl: undefined
       };
 
       if (post.author) {
@@ -43,7 +129,11 @@
         obj.lang = post.lang;
       }
       if (post.poster) {
-        obj.coverpicurl = `/asset${post.poster.path}?q=2`;
+        if(post.poster.path.startsWith('http')){
+          obj.coverpicurl = post.poster.path
+        }else {
+          obj.coverpicurl = `/asset${post.poster.path}?q=2`;
+        }
       }
       posts.push(obj);
 

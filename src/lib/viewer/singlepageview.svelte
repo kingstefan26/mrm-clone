@@ -4,30 +4,57 @@
   export let post = undefined;
   export let doublePageview;
 
+  import moment from "moment";
+
   import Layout from "$lib/_classiclayout.svelte";
   import Lazy from "$lib/Lazy.svelte";
 
   let currentChapter = 0;
 
+  console.log(post._created);
+
 </script>
 
+<svelte:head>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;600;700;900&display=swap" rel="stylesheet">
+</svelte:head>
+
 <Layout>
-  <div class="singlepage-wrapper">
-    <div class="content singlepage-content">
+  <main class="singlepage-wrapper">
+    <article class="content singlepage-content">
       {#if !post}
         <h1>Post not Fount</h1>
       {:else}
         <button class="switchvieverstylebtn" on:click={() => {history.back();}}>Go Back</button>
         <button class="switchvieverstylebtn" on:click={() => { $doublePageview = !$doublePageview; }}>Reader mode
         </button>
-        <h2>{post.title}</h2>
+
+        <header>
+          <h2 class="title">{post.title}</h2>
+
+          <p class="entry-meta">
+            <time id="creation" datetime="{new Date(post._created)}">{moment(post._created, 'x').format('MMM D, YYYY')}</time>
+
+          </p>
+
+          <p class="entry-meta">
+            {#if currentChapter > 0}
+              <h3 id="chaptertitle">Chapter: {currentChapter}</h3>
+            {/if}
+            {#if post.author}
+              <span class="entry-categories">Author: <a href="/search?artist={post.author}">{post.author}</a></span>
+            {/if}
+          </p>
+
+
+        </header>
 
 
         {#await fetchchapter}
           <p>...waiting</p>
         {:then chapters}
 
-          <h1 id="chaptertitle">Chapter: {currentChapter}</h1>
+
           {#each chapters as chapter, index}
             {#if currentChapter === index}
               {#each chapter as image, imgindex}
@@ -76,7 +103,10 @@
           <p>An error occurred!</p>
         {/await}
       {/if}
-    </div>
+    </article>
+  </main>
+  <div class="">
+
 
   </div>
 </Layout>
@@ -85,6 +115,32 @@
 <style>
     .iamselected {
         color: red;
+    }
+
+    .entry-categories {
+        color: rgb(153, 153, 153);
+    }
+
+    .entry-categories a {
+        color: white;
+    }
+
+    .title {
+        font-weight: 900;
+        size: 3em;
+        font-family: 'Public Sans', sans-serif;
+        color: #c5c4c4;
+
+    }
+
+    .entry-meta {
+
+    }
+
+    #chaptertitle {
+        font-family: 'Public Sans', sans-serif;
+        font-weight: 500;
+        font-size: 1.2em;
     }
 
     #linkwrapper * {
@@ -139,7 +195,10 @@
     }
 
     .singlepage-content {
-        width: 70%;
+        padding: 10px 30px 14px;
+        /*width: 90%;*/
+        margin-right: auto;
+        margin-left: auto;
     }
 
 

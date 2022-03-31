@@ -1,17 +1,19 @@
 <script context="module">
-    export async function preload(page, session) {
-        const {slug} = page.params;
-        const query = page.query;
+  /** @type {import('./[slug]').Load} */  export async function load({ params, fetch, session, stuff }) {
+    // const url = `https://cms.example.com/article/${params.slug}.json`;
+    // const response = await fetch("url");
 
-        const res = this.fetch('');
-
-        return {results: "111"};
-    }
+    return {
+      props: {
+        resoults: "implement me"
+      }
+    };
+  }
 </script>
 
 
 <script>
-    export let resoults;
+  export let resoults;
 </script>
 
 

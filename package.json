@@ -33,6 +33,7 @@
     "cockpit-api-client": "^1.0.4",
     "cookie": "^0.4.1",
     "isomorphic-fetch": "^3.0.0",
+    "moment": "^2.29.1",
     "qs": "^6.10.3",
     "query-string": "^7.1.1",
     "sharp": "^0.30.3",
